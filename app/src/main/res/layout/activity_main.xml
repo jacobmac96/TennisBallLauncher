@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.tennisballlauncher.MainActivity">
+
+    <TextView
+        android:id="@+id/SpeedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/PickSpeed"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <SeekBar
+        android:id="@+id/SpeedSlider"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/SpeedText"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:max="100"
+        android:progress="50"
+        android:min="0"/>
+
+    <TextView
+        android:id="@+id/SpeedText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/SpeedSlider"
+        android:text="@string/SpeedText"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/CurrentSpeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/SpeedText2"
+        android:layout_toRightOf="@+id/SpeedText2"
+        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
+        android:text="50"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/DelayText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/CurrentSpeed"
+        android:text="@string/PickDelay"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    <SeekBar
+        android:id="@+id/DelaySlider"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/DelayText"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:max="15"
+        android:progress="5"
+        android:min="0"/>
+
+    <TextView
+        android:id="@+id/DelayText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/DelaySlider"
+        android:text="Current Delay: "
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/CurrentDelay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/DelayText2"
+        android:layout_toRightOf="@+id/DelayText2"
+        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
+        android:text="5"
+        android:textSize="20sp" />
+
+</RelativeLayout>
