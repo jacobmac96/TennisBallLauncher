@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                     }
                 }
                 break;
-            case R.id.DelaySlider:
+            case R.id.DelaySlider://send updated time to arduino
                 String newDelay = Integer.toString(progressChangedValue);
                 currentDelay.setText(newDelay);
                 if (btSocket != null) {
