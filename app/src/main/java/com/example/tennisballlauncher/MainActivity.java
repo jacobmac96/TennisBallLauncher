@@ -1,29 +1,21 @@
 package com.example.tennisballlauncher;
 
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
     // Intent request codes
-    private Set pairedDevices;
     BluetoothAdapter myBluetooth = null;
     BluetoothSocket btSocket = null;
     private boolean isBtConnected = false;
@@ -158,6 +150,38 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                 isBtConnected = true;
             }
            // progress.dismiss();
+        }
+    }
+
+    protected void onButtonPress(View view) {
+        switch (view.getId()) {
+            case R.id.startButton:
+                if (btSocket != null) {
+                    try {
+                        //btSocket.getOutputStream().write(progressChangedValue);
+                        char mode = (char) 0;
+                        char BtTxCmd = 'm';
+                        //String BtTxData = ('s' + (char)progressChangedValue);
+                        btSocket.getOutputStream().write(BtTxCmd);
+                        btSocket.getOutputStream().write(mode);
+                    } catch (IOException e) {
+                    }
+                }
+                break;
+            case R.id.stopButton:
+                if (btSocket != null) {
+                    try {
+                        //btSocket.getOutputStream().write(progressChangedValue);
+                        char mode = (char) 1;
+                        char BtTxCmd = 'm';
+                        //String BtTxData = ('s' + (char)progressChangedValue);
+                        btSocket.getOutputStream().write(BtTxCmd);
+                        btSocket.getOutputStream().write(mode);
+                    } catch (IOException e) {
+                    }
+                    break;
+
+                }
         }
     }
 }

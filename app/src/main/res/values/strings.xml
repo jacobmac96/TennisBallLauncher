@@ -3,4 +3,6 @@
     <string name="PickSpeed">Pick a Speed</string>
     <string name="PickDelay">Pick a Delay Time</string>
     <string name="SpeedText">Current Speed:</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 </resources>

@@ -13,6 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
         android:text="@string/PickSpeed"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -33,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/SpeedSlider"
+        android:layout_margin="10dp"
         android:text="@string/SpeedText"
         android:textSize="20sp" />
 
@@ -40,7 +42,8 @@
         android:id="@+id/CurrentSpeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/SpeedText2"
+        android:layout_below="@+id/SpeedSlider"
+        android:layout_margin="10dp"
         android:layout_toRightOf="@+id/SpeedText2"
         android:paddingLeft="5dp"
         android:paddingStart="5dp"
@@ -52,6 +55,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/CurrentSpeed"
+        android:layout_margin="10dp"
         android:text="@string/PickDelay"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -71,6 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/DelaySlider"
+        android:layout_margin="10dp"
         android:text="Current Delay: "
         android:textSize="20sp" />
 
@@ -78,11 +83,32 @@
         android:id="@+id/CurrentDelay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/DelayText2"
+        android:layout_below="@+id/DelaySlider"
+        android:layout_margin="10dp"
         android:layout_toRightOf="@+id/DelayText2"
         android:paddingLeft="5dp"
         android:paddingStart="5dp"
         android:text="5"
         android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/CurrentDelay"
+        android:layout_margin="10dp"
+        android:background="@color/Green"
+        android:onClick="onButtonPress"
+        tools:text="@string/start" />
+
+    <Button
+        android:id="@+id/stopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startButton"
+        android:layout_margin="10dp"
+        android:background="@color/Red"
+        android:onClick="onButtonPress"
+        tools:text="@string/stop" />
 
 </RelativeLayout>
