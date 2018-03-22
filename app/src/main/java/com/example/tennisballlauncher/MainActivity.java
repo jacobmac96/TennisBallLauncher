@@ -1,20 +1,27 @@
 package com.example.tennisballlauncher;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
+    private ConnectedThread mConnectedThread;
     // Intent request codes
     BluetoothAdapter myBluetooth = null;
     BluetoothSocket btSocket = null;
@@ -24,9 +31,12 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     SeekBar delaySeekBar;
     TextView currentSpeed;
     TextView currentDelay;
+    Button  ballSensed;
     int progressChangedValue = 0;
     //SPP UUID. Look for it
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,15 +48,17 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         currentDelay = findViewById(R.id.CurrentDelay);
         speedSeekBar = findViewById(R.id.SpeedSlider);
         delaySeekBar = findViewById(R.id.DelaySlider);
+        ballSensed = findViewById(R.id.ballSensedButton);
         // perform seek bar change listener event used for getting the progress value
         speedSeekBar.setOnSeekBarChangeListener(this);
         delaySeekBar.setOnSeekBarChangeListener(this);
+
     }
+
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        switch(seekBar.getId())
-        {
+        switch (seekBar.getId()) {
             case R.id.SpeedSlider:
                 progressChangedValue = progress;
                 break;
@@ -59,8 +71,9 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+        // TODO Auto-generated method stub
     }
+
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         switch (seekBar.getId()) {
@@ -72,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                         //btSocket.getOutputStream().write(progressChangedValue);
                         char speed = (char) progressChangedValue;
                         char BtTxCmd = 's';
-                        //String BtTxData = ('s' + (char)progressChangedValue);
                         btSocket.getOutputStream().write(BtTxCmd);
                         btSocket.getOutputStream().write(speed);
                     } catch (IOException e) {
@@ -109,47 +121,42 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         private boolean ConnectSuccess = true; //if it's here, it's almost connected
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
 
         }
 
         @Override
         protected Void doInBackground(Void... devices) //while the progress dialog is shown, the connection is done in background
         {
-            try
-            {
-                if (btSocket == null || !isBtConnected)
-                {
+            try {
+                if (btSocket == null || !isBtConnected) {
                     myBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
                     BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(address);//connects to the device's address and checks if it's available
                     btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
                     btSocket.connect();//start connection
-                }
-            }
-            catch (IOException e)
-            {
+                                   }
+            } catch (IOException e) {
                 ConnectSuccess = false;//if the try failed, you can check the exception here
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(Void result) //after the doInBackground, it checks if everything went fine
         {
             super.onPostExecute(result);
 
-            if (!ConnectSuccess)
-            {
-               // msg("Connection Failed. Is it a SPP Bluetooth? Try again.");
+            if (!ConnectSuccess) {
+                // msg("Connection Failed. Is it a SPP Bluetooth? Try again.");
                 finish();
-            }
-            else
-            {
-              //  msg("Connected.");
+            } else {
+                //  msg("Connected.");
                 isBtConnected = true;
+                mConnectedThread = new ConnectedThread(btSocket);
+                mConnectedThread.start();
             }
-           // progress.dismiss();
+            // progress.dismiss();
         }
     }
 
@@ -179,9 +186,78 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                         btSocket.getOutputStream().write(mode);
                     } catch (IOException e) {
                     }
-                    break;
-
+                }
+                break;
+            case R.id.launchButton:
+                if (btSocket != null) {
+                    try {
+                        //btSocket.getOutputStream().write(progressChangedValue);
+                        char go = (char) 1;
+                        char BtTxCmd = 'l';
+                        btSocket.getOutputStream().write(BtTxCmd);
+                        btSocket.getOutputStream().write(go);
+                    } catch (IOException e) {
+                    }
                 }
         }
     }
+
+    /**
+     * This thread runs during a connection with a remote device.
+     * It handles all incoming and outgoing transmissions.
+     */
+    private class ConnectedThread extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
+
+        public ConnectedThread(BluetoothSocket socket) {
+            mmSocket = socket;
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            // Get the BluetoothSocket input and output streams
+            try {
+                tmpIn = socket.getInputStream();
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e) {
+                Log.d("myTag", "exception");
+            }
+
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+        }
+
+        public void run() {
+            byte[] buffer = new byte[1024];
+            int bytes;
+
+            // Keep listening to the InputStream while connected
+            while (isBtConnected) {
+                try {
+                    if(mmInStream.available()>0) {
+                        try {
+                            // Read from the InputStream
+                            bytes = mmInStream.read();
+                            String text = Integer.toString(bytes);
+                            if(bytes == 49)
+                            {
+                                ballSensed.setBackgroundColor(getResources().getColor(R.color.Green));
+                            }
+                            else if(bytes == 48)
+                            {
+                                ballSensed.setBackgroundColor(getResources().getColor(R.color.Red));
+                            }
+                            Log.d("myTag", text);
+                        } catch (IOException e) {
+
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }

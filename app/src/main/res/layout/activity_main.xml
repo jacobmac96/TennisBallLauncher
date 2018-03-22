@@ -99,7 +99,7 @@
         android:layout_margin="10dp"
         android:background="@color/Green"
         android:onClick="onButtonPress"
-        tools:text="@string/start" />
+        android:text="@string/start" />
 
     <Button
         android:id="@+id/stopButton"
@@ -109,6 +109,28 @@
         android:layout_margin="10dp"
         android:background="@color/Red"
         android:onClick="onButtonPress"
-        tools:text="@string/stop" />
+        android:text="@string/stop" />
+
+    <Button
+        android:id="@+id/launchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/CurrentDelay"
+        android:layout_margin="10dp"
+        android:layout_toRightOf="@+id/startButton"
+        android:background="@color/colorPrimary"
+        android:onClick="onButtonPress"
+        android:text="Launch" />
+
+    <Button
+        android:id="@+id/ballSensedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/stopButton"
+        android:text="Ball Sensed"
+        android:background="@color/Red"
+        android:layout_alignStart="@+id/stopButton"
+        android:layout_alignEnd="@+id/launchButton"/>
+
 
 </RelativeLayout>
